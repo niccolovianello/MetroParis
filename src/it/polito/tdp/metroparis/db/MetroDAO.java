@@ -67,6 +67,58 @@ public class MetroDAO {
 
 		return linee;
 	}
+	
+	public boolean esisteConnessione(Fermata partenza, Fermata arrivo) {
+		String sql = "SELECT COUNT(*) AS cnt FROM connessione WHERE id_stazP = ? AND id_stazA = ?";
+		
+		Connection conn = DBConnect.getConnection();
+		PreparedStatement st;
+		try {
+			st = conn.prepareStatement(sql);
+			st.setInt(1, partenza.getIdFermata());
+			st.setInt(2, arrivo.getIdFermata());
+			
+			ResultSet rs = st.executeQuery();
+			rs.next();
+			
+			int numero = rs.getInt("cnt");
+			
+			conn.close();
+			
+			return (numero > 0);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		}
+		return false;
+	}
+	
+	public List<Fermata> getStazioneArrivo(Fermata partenza) {
+		final String sql = "SELECT id_stazA FROM connessione WHERE id_stazP = ?";
+
+		List<Fermata> fermate = new ArrayList<Fermata>();
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, partenza.getIdFermata());
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				fermate.add(new Fermata(rs.getInt("id_stazA"), null, null));
+			}
+
+			st.close();
+			conn.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Errore di connessione al Database.");
+		}
+
+		return fermate;
+	}
 
 
 }
