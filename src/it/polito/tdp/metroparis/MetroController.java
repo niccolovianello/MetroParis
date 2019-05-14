@@ -32,6 +32,8 @@ public class MetroController {
 
 	@FXML
 	void handleCerca(ActionEvent event) {
+		
+		txtResult.clear();
 
 		Fermata partenza = boxPartenza.getValue();
 		Fermata arrivo = boxArrivo.getValue();
@@ -66,8 +68,8 @@ public class MetroController {
 
 	}
 
-	public void setModel(Model m) {
-		this.model = m;
+	public void setModel(Model model) {
+		this.model = model;
 		model.creaGrafo();
 		boxPartenza.getItems().addAll(model.getFermate());
 		boxArrivo.getItems().addAll(model.getFermate());
