@@ -125,10 +125,10 @@ public class MetroDAO {
 	}
 	
 	public List<ConnessioneVelocita> getConnessioneVelocita(){
-		final String sql = "SELECT connessione.`id_stazP`, connessione.`id_stazA`, MAX(linea.velocita) AS velocita, COUNT(*) " + 
+		final String sql = "SELECT connessione.id_stazP, connessione.id_stazA, MAX(linea.velocita) AS velocita, COUNT(*) " + 
 				"FROM connessione, linea " + 
-				"WHERE connessione.id_linea = linea.`id_linea` " + 
-				"GROUP BY connessione.`id_stazA`, connessione.`id_stazP` ";
+				"WHERE connessione.id_linea = linea.id_linea " + 
+				"GROUP BY connessione.id_stazA, connessione.id_stazP ";
 		
 		List<ConnessioneVelocita> result = new ArrayList<>();
 
