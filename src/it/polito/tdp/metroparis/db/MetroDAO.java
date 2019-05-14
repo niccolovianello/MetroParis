@@ -6,9 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.javadocmd.simplelatlng.LatLng;
 
+import it.polito.tdp.metroparis.model.ConnessioneVelocita;
 import it.polito.tdp.metroparis.model.Fermata;
 import it.polito.tdp.metroparis.model.Linea;
 
@@ -94,19 +96,49 @@ public class MetroDAO {
 		return false;
 	}
 	
-	public List<Fermata> getStazioneArrivo(Fermata partenza) {
-		final String sql = "SELECT id_stazA FROM connessione WHERE id_stazP = ?";
+	public List<Fermata> stazioniArrivo(Fermata partenza, Map<Integer, Fermata> idMap) {
+		String sql = "SELECT id_stazA " + 
+				"FROM connessione " + 
+				"WHERE id_stazP=?" ;
 
-		List<Fermata> fermate = new ArrayList<Fermata>();
+		Connection conn = DBConnect.getConnection() ;
+		try {
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, partenza.getIdFermata());
+			ResultSet rs = st.executeQuery() ;
+			
+			List<Fermata> result = new ArrayList<>() ;
+			
+			while(rs.next()) {
+				result.add(idMap.get(rs.getInt("id_stazA"))) ;
+			}
+			
+			conn.close();
+			return result ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+		
+	
+	}
+	
+	public List<ConnessioneVelocita> getConnessioneVelocita(){
+		final String sql = "SELECT connessione.`id_stazP`, connessione.`id_stazA`, MAX(linea.velocita) AS velocita, COUNT(*) " + 
+				"FROM connessione, linea " + 
+				"WHERE connessione.id_linea = linea.`id_linea` " + 
+				"GROUP BY connessione.`id_stazA`, connessione.`id_stazP` ";
+		
+		List<ConnessioneVelocita> result = new ArrayList<>();
 
 		try {
 			Connection conn = DBConnect.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
-			st.setInt(1, partenza.getIdFermata());
 			ResultSet rs = st.executeQuery();
 
 			while (rs.next()) {
-				fermate.add(new Fermata(rs.getInt("id_stazA"), null, null));
+				result.add(new ConnessioneVelocita(rs.getInt("id_stazP"), rs.getInt("id_stazA"), rs.getDouble("velocita")));
 			}
 
 			st.close();
@@ -117,7 +149,7 @@ public class MetroDAO {
 			throw new RuntimeException("Errore di connessione al Database.");
 		}
 
-		return fermate;
+		return result;
 	}
 
 
