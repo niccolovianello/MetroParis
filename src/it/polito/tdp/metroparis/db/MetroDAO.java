@@ -121,7 +121,6 @@ public class MetroDAO {
 			return null ;
 		}
 		
-	
 	}
 	
 	public List<ConnessioneVelocita> getConnessioneVelocita(){

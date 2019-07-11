@@ -154,9 +154,9 @@ public class Model {
 	}
 	
 	public List<Fermata> trovaCamminoMinimo(Fermata partenza, Fermata arrivo) {
-		DijkstraShortestPath<Fermata, DefaultWeightedEdge> dijstra = new DijkstraShortestPath<>(this.grafo) ;
-		GraphPath<Fermata, DefaultWeightedEdge> path = dijstra.getPath(partenza, arrivo) ;
-		return path.getVertexList() ;
+		DijkstraShortestPath<Fermata, DefaultWeightedEdge> dijstra = new DijkstraShortestPath<>(this.grafo);
+		GraphPath<Fermata, DefaultWeightedEdge> path = dijstra.getPath(partenza, arrivo);
+		return path.getVertexList();
 	}
 
 }
